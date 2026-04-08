@@ -18,6 +18,12 @@
 
 ---
 
+<p align="center">
+  <img src="docs/demo.svg" alt="VulnHawk Demo" width="800">
+</p>
+
+---
+
 ## What Makes VulnHawk Different
 
 Traditional scanners (Semgrep, CodeQL, Bandit) use pattern matching and AST rules. They're great at finding known patterns, but they **can't understand intent**.
