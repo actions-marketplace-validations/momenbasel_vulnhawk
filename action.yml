@@ -1,0 +1,114 @@
+name: 'VulnHawk Security Scan'
+description: 'AI-powered code security scanner that finds vulnerabilities Semgrep and CodeQL miss'
+branding:
+  icon: 'shield'
+  color: 'red'
+
+inputs:
+  target:
+    description: 'Path to scan (file or directory)'
+    required: false
+    default: '.'
+  backend:
+    description: 'LLM backend (claude, openai, ollama)'
+    required: false
+    default: 'claude'
+  model:
+    description: 'Specific model name'
+    required: false
+  mode:
+    description: 'Scan mode (full, auth, injection, secrets, config, crypto)'
+    required: false
+    default: 'full'
+  severity:
+    description: 'Minimum severity to report (critical, high, medium, low, info)'
+    required: false
+    default: 'medium'
+  api-key:
+    description: 'API key for the LLM backend (ANTHROPIC_API_KEY or OPENAI_API_KEY)'
+    required: true
+  fail-on-findings:
+    description: 'Fail the workflow if critical/high findings are detected'
+    required: false
+    default: 'true'
+  sarif-file:
+    description: 'Path to write SARIF output for GitHub Code Scanning'
+    required: false
+    default: 'vulnhawk-results.sarif'
+
+outputs:
+  findings-count:
+    description: 'Total number of findings'
+    value: ${{ steps.scan.outputs.findings-count }}
+  critical-count:
+    description: 'Number of critical findings'
+    value: ${{ steps.scan.outputs.critical-count }}
+  sarif-file:
+    description: 'Path to SARIF results file'
+    value: ${{ inputs.sarif-file }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install VulnHawk
+      shell: bash
+      run: pip install vulnhawk
+
+    - name: Run VulnHawk Scan
+      id: scan
+      shell: bash
+      env:
+        ANTHROPIC_API_KEY: ${{ inputs.backend == 'claude' && inputs.api-key || '' }}
+        OPENAI_API_KEY: ${{ inputs.backend == 'openai' && inputs.api-key || '' }}
+      run: |
+        # Run scan with SARIF output
+        vulnhawk scan ${{ inputs.target }} \
+          --backend ${{ inputs.backend }} \
+          ${{ inputs.model && format('--model {0}', inputs.model) || '' }} \
+          --mode ${{ inputs.mode }} \
+          --severity ${{ inputs.severity }} \
+          --output sarif \
+          --output-file ${{ inputs.sarif-file }} \
+          --no-progress || true
+
+        # Also generate JSON for summary
+        vulnhawk scan ${{ inputs.target }} \
+          --backend ${{ inputs.backend }} \
+          ${{ inputs.model && format('--model {0}', inputs.model) || '' }} \
+          --mode ${{ inputs.mode }} \
+          --severity ${{ inputs.severity }} \
+          --output json \
+          --output-file /tmp/vulnhawk-results.json \
+          --no-progress || true
+
+        # Extract counts
+        if [ -f /tmp/vulnhawk-results.json ]; then
+          TOTAL=$(python3 -c "import json; d=json.load(open('/tmp/vulnhawk-results.json')); print(d['summary']['total_findings'])")
+          CRITICAL=$(python3 -c "import json; d=json.load(open('/tmp/vulnhawk-results.json')); print(d['summary']['critical'])")
+          echo "findings-count=$TOTAL" >> $GITHUB_OUTPUT
+          echo "critical-count=$CRITICAL" >> $GITHUB_OUTPUT
+        else
+          echo "findings-count=0" >> $GITHUB_OUTPUT
+          echo "critical-count=0" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Upload SARIF to GitHub
+      if: always() && hashFiles(inputs.sarif-file) != ''
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ inputs.sarif-file }}
+
+    - name: Check for critical findings
+      if: inputs.fail-on-findings == 'true'
+      shell: bash
+      run: |
+        CRITICAL=${{ steps.scan.outputs.critical-count }}
+        if [ "$CRITICAL" -gt 0 ]; then
+          echo "::error::VulnHawk found $CRITICAL critical vulnerabilities"
+          exit 1
+        fi
