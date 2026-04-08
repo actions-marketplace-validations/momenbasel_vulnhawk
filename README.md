@@ -1,9 +1,10 @@
 <p align="center">
-  <a href="https://pypi.org/project/vulnhawk/"><img src="https://img.shields.io/pypi/v/vulnhawk?color=blue&label=PyPI" alt="PyPI"></a>
-  <a href="https://pypi.org/project/vulnhawk/"><img src="https://img.shields.io/pypi/pyversions/vulnhawk" alt="Python"></a>
-  <a href="https://github.com/momenbasel/vulnhawk/blob/main/LICENSE"><img src="https://img.shields.io/github/license/momenbasel/vulnhawk" alt="License"></a>
-  <a href="https://github.com/momenbasel/vulnhawk/stargazers"><img src="https://img.shields.io/github/stars/momenbasel/vulnhawk?style=social" alt="Stars"></a>
-  <a href="https://pypi.org/project/vulnhawk/"><img src="https://img.shields.io/pypi/dm/vulnhawk?label=downloads" alt="Downloads"></a>
+  <a href="https://pypi.org/project/vulnhawk/"><img alt="PyPI" src="https://img.shields.io/pypi/v/vulnhawk.svg?style=flat&label=PyPI&color=blue"></a>
+  <a href="https://pypi.org/project/vulnhawk/"><img alt="Python" src="https://img.shields.io/pypi/pyversions/vulnhawk.svg?style=flat"></a>
+  <a href="https://github.com/marketplace/actions/vulnhawk-security-scan"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-VulnHawk-2088FF?style=flat&logo=github-actions&logoColor=white"></a>
+  <a href="https://github.com/momenbasel/vulnhawk/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/momenbasel/vulnhawk.svg?style=flat"></a>
+  <a href="https://github.com/momenbasel/vulnhawk/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/momenbasel/vulnhawk.svg?style=social"></a>
+  <a href="https://pypi.org/project/vulnhawk/"><img alt="Downloads" src="https://img.shields.io/pypi/dm/vulnhawk.svg?style=flat&label=downloads"></a>
 </p>
 
 <h1 align="center">VulnHawk</h1>
@@ -16,6 +17,23 @@
   VulnHawk uses AI to understand your code's <em>business logic</em> - not just pattern matching.<br>
   It spots missing auth checks, IDOR flaws, and logic bugs that rule-based tools can't detect.
 </p>
+
+---
+
+## Installation
+
+**CLI via PyPI:**
+```bash
+pip install vulnhawk
+```
+
+**GitHub Action via Marketplace:**
+```yaml
+- uses: momenbasel/vulnhawk@v0.1.0
+  with:
+    target: '.'
+    api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+```
 
 ---
 
