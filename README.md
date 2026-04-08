@@ -4,7 +4,6 @@
   <a href="https://github.com/marketplace/actions/vulnhawk-security-scan"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-VulnHawk-2088FF?style=flat&logo=github-actions&logoColor=white"></a>
   <a href="https://github.com/momenbasel/vulnhawk/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/momenbasel/vulnhawk.svg?style=flat"></a>
   <a href="https://github.com/momenbasel/vulnhawk/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/momenbasel/vulnhawk.svg?style=social"></a>
-  <a href="https://pypi.org/project/vulnhawk/"><img alt="Downloads" src="https://img.shields.io/pypi/dm/vulnhawk.svg?style=flat&label=downloads"></a>
 </p>
 
 <h1 align="center">VulnHawk</h1>
