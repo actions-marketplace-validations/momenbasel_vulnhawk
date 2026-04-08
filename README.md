@@ -1,8 +1,9 @@
 <p align="center">
-  <img src="https://img.shields.io/pypi/v/vulnhawk?color=blue&label=PyPI" alt="PyPI">
-  <img src="https://img.shields.io/pypi/pyversions/vulnhawk" alt="Python">
-  <img src="https://img.shields.io/github/license/momenbasel/vulnhawk" alt="License">
-  <img src="https://img.shields.io/github/stars/momenbasel/vulnhawk?style=social" alt="Stars">
+  <a href="https://pypi.org/project/vulnhawk/"><img src="https://img.shields.io/pypi/v/vulnhawk?color=blue&label=PyPI" alt="PyPI"></a>
+  <a href="https://pypi.org/project/vulnhawk/"><img src="https://img.shields.io/pypi/pyversions/vulnhawk" alt="Python"></a>
+  <a href="https://github.com/momenbasel/vulnhawk/blob/main/LICENSE"><img src="https://img.shields.io/github/license/momenbasel/vulnhawk" alt="License"></a>
+  <a href="https://github.com/momenbasel/vulnhawk/stargazers"><img src="https://img.shields.io/github/stars/momenbasel/vulnhawk?style=social" alt="Stars"></a>
+  <a href="https://pypi.org/project/vulnhawk/"><img src="https://img.shields.io/pypi/dm/vulnhawk?label=downloads" alt="Downloads"></a>
 </p>
 
 <h1 align="center">VulnHawk</h1>
