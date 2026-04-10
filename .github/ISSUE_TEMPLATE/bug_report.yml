@@ -1,0 +1,45 @@
+name: Bug Report
+description: Report a bug in VulnHawk
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to reproduce the issue
+      value: |
+        1. Run `vulnhawk scan ...`
+        2. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Backend
+      options:
+        - claude (API)
+        - claude-code (CLI)
+        - openai (API)
+        - codex (CLI)
+        - ollama
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: VulnHawk version
+      placeholder: "0.2.0"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: "macOS 15, Ubuntu 24.04, etc."

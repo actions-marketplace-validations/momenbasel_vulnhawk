@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vulnhawk"
-version = "0.1.0"
+version = "0.2.0"
 description = "AI-powered code security scanner that finds vulnerabilities Semgrep and CodeQL miss"
 readme = "README.md"
 license = "LicenseRef-VulnHawk"

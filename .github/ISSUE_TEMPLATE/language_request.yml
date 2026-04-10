@@ -1,0 +1,22 @@
+name: Language Support Request
+description: Request support for a new programming language
+labels: ["enhancement", "language-support"]
+body:
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      placeholder: "e.g., Rust, Kotlin, Swift"
+    validations:
+      required: true
+  - type: textarea
+    id: frameworks
+    attributes:
+      label: Key frameworks to support
+      description: Which frameworks should VulnHawk understand?
+      placeholder: "e.g., Actix-web routes, Ktor handlers"
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: What would you scan with this language support?
