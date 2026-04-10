@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#161b22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f85149;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#58a6ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#388bfd;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="irisGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff7b72;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f85149;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Shield border -->
+  <path d="M256 30 L440 95 L420 300 L350 400 L256 450 L162 400 L92 300 L72 95 Z" 
+        fill="url(#borderGrad)" />
+  
+  <!-- Shield body -->
+  <path d="M256 46 L428 106 L409 295 L342 390 L256 436 L170 390 L103 295 L84 106 Z" 
+        fill="url(#shieldGrad)" />
+  
+  <!-- Eye outer (scanning) -->
+  <ellipse cx="256" cy="220" rx="130" ry="65" 
+           fill="none" stroke="url(#eyeGrad)" stroke-width="5" filter="url(#glow)" opacity="0.9"/>
+  
+  <!-- Eye middle ring -->
+  <ellipse cx="256" cy="220" rx="90" ry="55" 
+           fill="none" stroke="#58a6ff" stroke-width="2" opacity="0.4"/>
+  
+  <!-- Iris -->
+  <circle cx="256" cy="220" r="42" fill="url(#irisGrad)" />
+  
+  <!-- Pupil -->
+  <circle cx="256" cy="220" r="18" fill="#0d1117" />
+  
+  <!-- Eye highlight -->
+  <circle cx="243" cy="207" r="8" fill="#ffffff" opacity="0.9" />
+  <circle cx="268" cy="230" r="4" fill="#ffffff" opacity="0.4" />
+  
+  <!-- Scan lines (left) -->
+  <line x1="60" y1="200" x2="110" y2="210" stroke="#58a6ff" stroke-width="2" opacity="0.5"/>
+  <line x1="55" y1="220" x2="110" y2="220" stroke="#58a6ff" stroke-width="2.5" opacity="0.6"/>
+  <line x1="60" y1="240" x2="110" y2="230" stroke="#58a6ff" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Scan lines (right) -->
+  <line x1="402" y1="210" x2="452" y2="200" stroke="#58a6ff" stroke-width="2" opacity="0.5"/>
+  <line x1="402" y1="220" x2="457" y2="220" stroke="#58a6ff" stroke-width="2.5" opacity="0.6"/>
+  <line x1="402" y1="230" x2="452" y2="240" stroke="#58a6ff" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Code bracket left < -->
+  <text x="130" y="360" font-family="SF Mono, Menlo, Monaco, monospace" font-size="48" 
+        font-weight="bold" fill="#58a6ff" opacity="0.7">&lt;</text>
+  
+  <!-- Code bracket right /> -->
+  <text x="330" y="360" font-family="SF Mono, Menlo, Monaco, monospace" font-size="48" 
+        font-weight="bold" fill="#58a6ff" opacity="0.7">/&gt;</text>
+  
+  <!-- VH monogram -->
+  <text x="256" y="365" text-anchor="middle" 
+        font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif" 
+        font-size="64" font-weight="800" fill="#f0f6fc" letter-spacing="-2">VH</text>
+</svg>
