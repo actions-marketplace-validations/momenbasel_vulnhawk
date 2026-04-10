@@ -7,7 +7,7 @@ name = "vulnhawk"
 version = "0.1.0"
 description = "AI-powered code security scanner that finds vulnerabilities Semgrep and CodeQL miss"
 readme = "README.md"
-license = "MIT"
+license = "LicenseRef-VulnHawk"
 requires-python = ">=3.10"
 authors = [{ name = "Moamen Basel" }]
 keywords = [
@@ -24,7 +24,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: Other/Proprietary License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",

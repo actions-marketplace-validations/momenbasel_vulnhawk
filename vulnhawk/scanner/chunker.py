@@ -44,7 +44,7 @@ DEFAULT_IGNORE = [
     "vendor/",
 ]
 
-SUPPORTED_EXTENSIONS = {".py", ".js", ".jsx", ".ts", ".tsx", ".go", ".java"}
+SUPPORTED_EXTENSIONS = {".py", ".js", ".jsx", ".ts", ".tsx", ".go", ".java", ".php", ".rb", ".erb"}
 
 # Max lines per chunk before splitting
 MAX_CHUNK_LINES = 200
@@ -110,6 +110,18 @@ def extract_imports(content: str, language: Language) -> list[str]:
     elif language == Language.GO:
         for match in re.finditer(r'import\s+(?:\(\s*([\s\S]*?)\s*\)|"([^"]+)")', content):
             imports.append(match.group(0).strip())
+
+    elif language == Language.PHP:
+        for line in content.splitlines():
+            stripped = line.strip()
+            if re.match(r"^(?:use|require|require_once|include|include_once|namespace)\s+", stripped):
+                imports.append(stripped.rstrip(";"))
+
+    elif language == Language.RUBY:
+        for line in content.splitlines():
+            stripped = line.strip()
+            if re.match(r"^(?:require|require_relative|include|extend|prepend|load)\s+", stripped):
+                imports.append(stripped)
 
     return imports
 
@@ -317,6 +329,163 @@ def _split_go(content: str, file_path: Path) -> list[CodeChunk]:
     return chunks
 
 
+def _split_php(content: str, file_path: Path) -> list[CodeChunk]:
+    """Split PHP code into logical chunks."""
+    chunks = []
+    lines = content.splitlines(keepends=True)
+    imports = extract_imports(content, Language.PHP)
+
+    boundaries = []
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        # Class declarations
+        if re.match(r"^(?:abstract\s+|final\s+)?class\s+\w+", stripped):
+            name_match = re.search(r"class\s+(\w+)", stripped)
+            name = name_match.group(1) if name_match else "unknown"
+            boundaries.append((i, name, "class"))
+        # Function/method declarations
+        elif re.match(r"^(?:public|protected|private|static|\s)*function\s+\w+", stripped):
+            name_match = re.search(r"function\s+(\w+)", stripped)
+            name = name_match.group(1) if name_match else "unknown"
+            boundaries.append((i, name, "function"))
+        # Route definitions (Laravel)
+        elif re.match(r"^Route::\s*(?:get|post|put|patch|delete|any|match)\s*\(", stripped):
+            route_match = re.search(r"""['"](/[^'"]*?)['"]""", stripped)
+            name = route_match.group(1) if route_match else "route"
+            boundaries.append((i, name, "route"))
+        # Trait declarations
+        elif re.match(r"^trait\s+\w+", stripped):
+            name_match = re.search(r"trait\s+(\w+)", stripped)
+            name = name_match.group(1) if name_match else "unknown"
+            boundaries.append((i, name, "class"))
+        # Interface declarations
+        elif re.match(r"^interface\s+\w+", stripped):
+            name_match = re.search(r"interface\s+(\w+)", stripped)
+            name = name_match.group(1) if name_match else "unknown"
+            boundaries.append((i, name, "class"))
+
+    if not boundaries:
+        chunks.append(CodeChunk(
+            file_path=file_path,
+            language=Language.PHP,
+            content=content,
+            start_line=1,
+            end_line=len(lines),
+            chunk_type="module",
+            name=file_path.stem,
+            imports=imports,
+        ))
+        return chunks
+
+    if boundaries[0][0] > 0:
+        module_content = "".join(lines[: boundaries[0][0]])
+        if module_content.strip():
+            chunks.append(CodeChunk(
+                file_path=file_path,
+                language=Language.PHP,
+                content=module_content,
+                start_line=1,
+                end_line=boundaries[0][0],
+                chunk_type="module",
+                name=file_path.stem,
+                imports=imports,
+            ))
+
+    for idx, (start, name, kind) in enumerate(boundaries):
+        end = boundaries[idx + 1][0] if idx + 1 < len(boundaries) else len(lines)
+        chunk_content = "".join(lines[start:end])
+        chunks.append(CodeChunk(
+            file_path=file_path,
+            language=Language.PHP,
+            content=chunk_content,
+            start_line=start + 1,
+            end_line=end,
+            chunk_type=kind,
+            name=name,
+            imports=imports,
+        ))
+
+    return chunks
+
+
+def _split_ruby(content: str, file_path: Path) -> list[CodeChunk]:
+    """Split Ruby code into logical chunks."""
+    chunks = []
+    lines = content.splitlines(keepends=True)
+    imports = extract_imports(content, Language.RUBY)
+
+    boundaries = []
+    for i, line in enumerate(lines):
+        stripped = line.lstrip()
+        indent = len(line) - len(stripped)
+        stripped = stripped.rstrip()
+        # Only top-level definitions (indent == 0)
+        if indent == 0:
+            # Class declarations
+            if re.match(r"^class\s+\w+", stripped):
+                name_match = re.search(r"class\s+(\w+)", stripped)
+                name = name_match.group(1) if name_match else "unknown"
+                boundaries.append((i, name, "class"))
+            # Module declarations
+            elif re.match(r"^module\s+\w+", stripped):
+                name_match = re.search(r"module\s+(\w+)", stripped)
+                name = name_match.group(1) if name_match else "unknown"
+                boundaries.append((i, name, "class"))
+            # Method definitions
+            elif re.match(r"^def\s+\w+", stripped):
+                name_match = re.search(r"def\s+(\w+)", stripped)
+                name = name_match.group(1) if name_match else "unknown"
+                boundaries.append((i, name, "function"))
+        # Rails route definitions (any indent level)
+        if re.match(r"^\s*(?:get|post|put|patch|delete|resources?|root)\s+", line):
+            route_match = re.search(r"""['"](/[^'"]*?)['"]""", stripped)
+            if route_match:
+                boundaries.append((i, route_match.group(1), "route"))
+
+    if not boundaries:
+        chunks.append(CodeChunk(
+            file_path=file_path,
+            language=Language.RUBY,
+            content=content,
+            start_line=1,
+            end_line=len(lines),
+            chunk_type="module",
+            name=file_path.stem,
+            imports=imports,
+        ))
+        return chunks
+
+    if boundaries[0][0] > 0:
+        module_content = "".join(lines[: boundaries[0][0]])
+        if module_content.strip():
+            chunks.append(CodeChunk(
+                file_path=file_path,
+                language=Language.RUBY,
+                content=module_content,
+                start_line=1,
+                end_line=boundaries[0][0],
+                chunk_type="module",
+                name=file_path.stem,
+                imports=imports,
+            ))
+
+    for idx, (start, name, kind) in enumerate(boundaries):
+        end = boundaries[idx + 1][0] if idx + 1 < len(boundaries) else len(lines)
+        chunk_content = "".join(lines[start:end])
+        chunks.append(CodeChunk(
+            file_path=file_path,
+            language=Language.RUBY,
+            content=chunk_content,
+            start_line=start + 1,
+            end_line=end,
+            chunk_type=kind,
+            name=name,
+            imports=imports,
+        ))
+
+    return chunks
+
+
 def chunk_file(file_path: Path, content: str | None = None) -> list[CodeChunk]:
     """Split a single file into logical chunks."""
     if content is None:
@@ -330,6 +499,10 @@ def chunk_file(file_path: Path, content: str | None = None) -> list[CodeChunk]:
         return _split_js_ts(content, file_path, language)
     elif language == Language.GO:
         return _split_go(content, file_path)
+    elif language == Language.PHP:
+        return _split_php(content, file_path)
+    elif language == Language.RUBY:
+        return _split_ruby(content, file_path)
     else:
         # Fallback: whole file as one chunk
         return [CodeChunk(

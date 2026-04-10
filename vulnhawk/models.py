@@ -60,6 +60,8 @@ class Language(str, Enum):
     TYPESCRIPT = "typescript"
     GO = "go"
     JAVA = "java"
+    PHP = "php"
+    RUBY = "ruby"
     UNKNOWN = "unknown"
 
     @classmethod
@@ -72,6 +74,9 @@ class Language(str, Enum):
             ".tsx": cls.TYPESCRIPT,
             ".go": cls.GO,
             ".java": cls.JAVA,
+            ".php": cls.PHP,
+            ".rb": cls.RUBY,
+            ".erb": cls.RUBY,
         }
         return mapping.get(ext.lower(), cls.UNKNOWN)
 

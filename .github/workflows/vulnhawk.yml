@@ -1,13 +1,14 @@
-# Example workflow: Run VulnHawk on every pull request
+# VulnHawk Security Scan - runs on initial push to main AND on every PR
 name: VulnHawk Security Scan
 
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches: [main, master]
+  pull_request:
 
 permissions:
-  security-events: write  # Required for SARIF upload
+  security-events: write
+  contents: read
 
 jobs:
   security-scan:
@@ -19,8 +20,8 @@ jobs:
         uses: momenbasel/vulnhawk@main
         with:
           target: '.'
-          backend: 'claude'
+          backend: 'claude-code'
           mode: 'full'
           severity: 'medium'
-          api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           fail-on-findings: 'true'

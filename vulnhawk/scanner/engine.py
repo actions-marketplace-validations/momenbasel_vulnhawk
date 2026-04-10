@@ -162,6 +162,7 @@ async def scan(
     mode: ScanMode = ScanMode.FULL,
     min_severity: Severity = Severity.LOW,
     show_progress: bool = True,
+    sarif_context: str = "",
 ) -> ScanResult:
     """Run a security scan on a target path."""
     start_time = time.time()
@@ -170,6 +171,10 @@ async def scan(
     system = SYSTEM_PROMPT
     if mode != ScanMode.FULL and mode.value in SCAN_MODE_ADDITIONS:
         system += SCAN_MODE_ADDITIONS[mode.value]
+
+    # Append SARIF context from other tools if provided
+    if sarif_context:
+        system += f"\n\n{sarif_context}"
 
     # Chunk the codebase
     if target.is_file():

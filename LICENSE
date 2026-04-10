@@ -1,21 +1,90 @@
-MIT License
+VulnHawk License v1.0
 
-Copyright (c) 2026 Moamen Basel
+Copyright (c) 2026 Moamen Basel. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Software: VulnHawk (https://github.com/momenbasel/vulnhawk)
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. DEFINITIONS
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+   "Software" means VulnHawk and all associated source code, documentation,
+   and related materials in this repository.
+
+   "Official Distribution" means the Software as published at:
+   - https://github.com/momenbasel/vulnhawk (source repository)
+   - https://github.com/marketplace/actions/vulnhawk-security-scan (GitHub Marketplace)
+   - https://pypi.org/project/vulnhawk/ (PyPI)
+
+   "Sell" means to provide to third parties, for a fee or other consideration
+   (including without limitation fees for hosting, consulting, support, or
+   managed services), a product or service whose value derives, entirely or
+   substantially, from the functionality of the Software.
+
+   "Fork" means any copy, derivative, or redistribution of the Software
+   outside of the Official Distribution channels, including GitHub forks
+   used for purposes other than contributing back to the original repository.
+
+2. GRANT OF RIGHTS
+
+   Subject to the conditions below, the Licensor grants you a non-exclusive,
+   worldwide, royalty-free license to:
+
+   (a) Use the Software for personal, educational, and internal business
+       purposes, provided you obtain and run the Software exclusively from
+       an Official Distribution channel.
+
+   (b) Modify the Software for your own internal use.
+
+   (c) Submit contributions (pull requests) back to the original repository.
+
+3. RESTRICTIONS
+
+   (a) NO SELLING. You may not Sell the Software, or any product or service
+       that substantially derives its value from the Software.
+
+   (b) NO COMPETING SERVICE. You may not use the Software, or any Fork or
+       derivative of it, to offer a competing code scanning or security
+       analysis service, whether free or paid.
+
+   (c) NO REDISTRIBUTION AS A PRODUCT. You may not redistribute, repackage,
+       or republish the Software (or any Fork) as your own product on any
+       marketplace, package registry, or distribution platform.
+
+   (d) FORKS FOR CONTRIBUTION ONLY. GitHub forks are permitted solely for
+       the purpose of submitting pull requests back to the original
+       repository. Running a Fork in production, offering a Fork as a
+       service, or publishing a Fork to any marketplace or registry is
+       prohibited.
+
+4. FREE USE FOR TEAMS AND STARTUPS
+
+   Teams, startups, and organizations of any size may use the Software free
+   of charge for their internal security scanning needs, provided they
+   install and run it exclusively from an Official Distribution channel
+   (GitHub Marketplace, PyPI, or the official GitHub repository).
+
+5. ATTRIBUTION
+
+   All copies, installations, and uses of the Software must retain this
+   license notice, the copyright notice, and attribution to the original
+   author (Moamen Basel) and repository.
+
+6. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+7. TERMINATION
+
+   This license terminates automatically if you violate any of its terms.
+   Upon termination, you must cease all use and destroy all copies of the
+   Software in your possession.
+
+8. GOVERNING LAW
+
+   This license shall be governed by and construed in accordance with
+   applicable law, without regard to conflict of law principles.

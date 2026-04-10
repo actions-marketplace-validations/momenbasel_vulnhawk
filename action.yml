@@ -10,7 +10,7 @@ inputs:
     required: false
     default: '.'
   backend:
-    description: 'LLM backend (claude, openai, ollama)'
+    description: 'LLM backend (claude, claude-code, openai, codex, ollama)'
     required: false
     default: 'claude'
   model:
@@ -25,8 +25,17 @@ inputs:
     required: false
     default: 'medium'
   api-key:
-    description: 'API key for the LLM backend (ANTHROPIC_API_KEY or OPENAI_API_KEY)'
-    required: true
+    description: 'API key for the LLM backend. Not required for claude-code backend.'
+    required: false
+    default: ''
+  claude-code-oauth-token:
+    description: 'OAuth token for Claude Code CLI backend (free for Claude Code subscribers)'
+    required: false
+    default: ''
+  sarif-input:
+    description: 'Path to SARIF file from other SAST tools (Semgrep, CodeQL) to enrich VulnHawk analysis'
+    required: false
+    default: ''
   fail-on-findings:
     description: 'Fail the workflow if critical/high findings are detected'
     required: false
@@ -59,13 +68,30 @@ runs:
       shell: bash
       run: pip install vulnhawk
 
+    - name: Install Claude Code CLI
+      if: inputs.backend == 'claude-code'
+      shell: bash
+      run: npm install -g @anthropic-ai/claude-code
+
+    - name: Install Codex CLI
+      if: inputs.backend == 'codex'
+      shell: bash
+      run: npm install -g @openai/codex
+
     - name: Run VulnHawk Scan
       id: scan
       shell: bash
       env:
         ANTHROPIC_API_KEY: ${{ inputs.backend == 'claude' && inputs.api-key || '' }}
         OPENAI_API_KEY: ${{ inputs.backend == 'openai' && inputs.api-key || '' }}
+        CLAUDE_CODE_OAUTH_TOKEN: ${{ inputs.backend == 'claude-code' && inputs.claude-code-oauth-token || '' }}
       run: |
+        # Build SARIF input flag if provided
+        SARIF_INPUT_FLAG=""
+        if [ -n "${{ inputs.sarif-input }}" ] && [ -f "${{ inputs.sarif-input }}" ]; then
+          SARIF_INPUT_FLAG="--sarif-input ${{ inputs.sarif-input }}"
+        fi
+
         # Run scan with SARIF output
         vulnhawk scan ${{ inputs.target }} \
           --backend ${{ inputs.backend }} \
@@ -74,6 +100,7 @@ runs:
           --severity ${{ inputs.severity }} \
           --output sarif \
           --output-file ${{ inputs.sarif-file }} \
+          $SARIF_INPUT_FLAG \
           --no-progress || true
 
         # Also generate JSON for summary
@@ -84,6 +111,7 @@ runs:
           --severity ${{ inputs.severity }} \
           --output json \
           --output-file /tmp/vulnhawk-results.json \
+          $SARIF_INPUT_FLAG \
           --no-progress || true
 
         # Extract counts

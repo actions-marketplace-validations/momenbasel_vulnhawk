@@ -20,9 +20,15 @@ def _get_llm(backend: str, model: str | None):
     if backend == "claude":
         from vulnhawk.llm.claude import ClaudeLLM
         llm = ClaudeLLM(model=model or "claude-sonnet-4-20250514")
+    elif backend == "claude-code":
+        from vulnhawk.llm.claude_code import ClaudeCodeLLM
+        llm = ClaudeCodeLLM(model=model or "sonnet")
     elif backend == "openai":
         from vulnhawk.llm.openai_backend import OpenAILLM
         llm = OpenAILLM(model=model or "gpt-4o")
+    elif backend == "codex":
+        from vulnhawk.llm.codex_cli import CodexCLILLM
+        llm = CodexCLILLM(model=model or "o3")
     elif backend == "ollama":
         from vulnhawk.llm.ollama import OllamaLLM
         llm = OllamaLLM(model=model or "llama3.1")
@@ -34,6 +40,15 @@ def _get_llm(backend: str, model: str | None):
         if backend == "claude":
             console.print("[red]ANTHROPIC_API_KEY not set.[/red]")
             console.print("Set it: export ANTHROPIC_API_KEY=sk-ant-...")
+        elif backend == "claude-code":
+            console.print("[red]Claude Code CLI not found or not authenticated.[/red]")
+            console.print("Install: npm install -g @anthropic-ai/claude-code")
+            console.print("Login:   claude login")
+            console.print("Or set:  export CLAUDE_CODE_OAUTH_TOKEN=...")
+        elif backend == "codex":
+            console.print("[red]Codex CLI not found.[/red]")
+            console.print("Install: npm install -g @openai/codex")
+            console.print("Login:   codex login")
         elif backend == "openai":
             console.print("[red]OPENAI_API_KEY not set.[/red]")
             console.print("Set it: export OPENAI_API_KEY=sk-...")
@@ -59,7 +74,7 @@ def main():
 @click.argument("target", type=click.Path(exists=True))
 @click.option(
     "--backend", "-b",
-    type=click.Choice(["claude", "openai", "ollama"]),
+    type=click.Choice(["claude", "claude-code", "openai", "codex", "ollama"]),
     default="claude",
     help="LLM backend to use",
 )
@@ -83,8 +98,9 @@ def main():
     help="Output format",
 )
 @click.option("--output-file", "-f", type=click.Path(), default=None, help="Write output to file")
+@click.option("--sarif-input", type=click.Path(exists=True), default=None, help="SARIF file from other tools (Semgrep, CodeQL) to enrich analysis")
 @click.option("--no-progress", is_flag=True, help="Disable progress bar")
-def scan(target, backend, model, mode, severity, output, output_file, no_progress):
+def scan(target, backend, model, mode, severity, output, output_file, sarif_input, no_progress):
     """Scan a codebase or file for security vulnerabilities.
 
     TARGET can be a file or directory path.
@@ -98,6 +114,8 @@ def scan(target, backend, model, mode, severity, output, output_file, no_progres
         vulnhawk scan ./api -b ollama -m llama3.1
 
         vulnhawk scan . -o sarif -f results.sarif
+
+        vulnhawk scan . --sarif-input semgrep-results.sarif
     """
     from vulnhawk.scanner.engine import scan as run_scan
 
@@ -105,6 +123,15 @@ def scan(target, backend, model, mode, severity, output, output_file, no_progres
     llm = _get_llm(backend, model)
     scan_mode = ScanMode(mode)
     min_severity = Severity(severity)
+
+    # Parse SARIF input from other tools if provided
+    sarif_context = ""
+    if sarif_input:
+        from vulnhawk.utils.sarif_input import format_sarif_context, parse_sarif_input as parse_sarif
+        prior_findings = parse_sarif(sarif_input)
+        sarif_context = format_sarif_context(prior_findings)
+        if output == "terminal":
+            console.print(f"[dim]Loaded {len(prior_findings)} prior findings from {sarif_input}[/dim]")
 
     # Banner
     if output == "terminal":
@@ -119,6 +146,7 @@ def scan(target, backend, model, mode, severity, output, output_file, no_progres
             mode=scan_mode,
             min_severity=min_severity,
             show_progress=output == "terminal" and not no_progress,
+            sarif_context=sarif_context,
         )
     )
 
