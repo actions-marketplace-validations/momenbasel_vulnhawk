@@ -1,52 +1,37 @@
 <p align="center">
-  <a href="https://pypi.org/project/vulnhawk/"><img alt="PyPI" src="https://img.shields.io/pypi/v/vulnhawk.svg?style=flat&label=PyPI&color=blue"></a>
-  <a href="https://pypi.org/project/vulnhawk/"><img alt="Python" src="https://img.shields.io/pypi/pyversions/vulnhawk.svg?style=flat"></a>
-  <a href="https://github.com/marketplace/actions/vulnhawk-security-scan"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-VulnHawk-2088FF?style=flat&logo=github-actions&logoColor=white"></a>
-  <a href="https://github.com/momenbasel/vulnhawk/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/License-Source%20Available-orange.svg?style=flat"></a>
-  <a href="https://github.com/momenbasel/vulnhawk/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/momenbasel/vulnhawk.svg?style=social"></a>
-</p>
-
-<h1 align="center">VulnHawk</h1>
-
-<p align="center">
-  <strong>AI-powered code security scanner that finds vulnerabilities<br>Semgrep and CodeQL miss.</strong>
+  <img src="docs/vulnhawk-banner.png" alt="VulnHawk" width="600">
 </p>
 
 <p align="center">
-  VulnHawk uses AI to understand your code's <em>business logic</em> - not just pattern matching.<br>
-  It spots missing auth checks, IDOR flaws, and logic bugs that rule-based tools can't detect.
+  <strong>AI-powered code security scanner that finds vulnerabilities Semgrep and CodeQL miss.</strong>
 </p>
 
 <p align="center">
-  <strong>FREE for Claude Code / Codex subscribers - no API key needed.</strong>
+  <a href="https://pypi.org/project/vulnhawk/"><img alt="PyPI" src="https://img.shields.io/pypi/v/vulnhawk.svg?style=for-the-badge&label=PyPI&color=3775A9&logo=pypi&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/marketplace/actions/vulnhawk-security-scan"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/GitHub_Action-Marketplace-2088FF?style=for-the-badge&logo=github-actions&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/momenbasel/vulnhawk/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/License-Source_Available-orange?style=for-the-badge"></a>&nbsp;
+  <a href="https://github.com/momenbasel/vulnhawk/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/momenbasel/vulnhawk?style=for-the-badge&logo=github&color=yellow"></a>
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick Start</a> &bull;
+  <a href="#github-action">GitHub Action</a> &bull;
+  <a href="#vulnhawk-vs-other-sast-tools">Comparison</a> &bull;
+  <a href="#supported-languages">Languages</a> &bull;
+  <a href="#faq">FAQ</a>
 </p>
 
 ---
 
-## Installation
+## The Problem
 
-**CLI via PyPI:**
-```bash
-pip install vulnhawk
-```
+Traditional SAST tools rely on pattern matching and AST rules. They excel at catching known vulnerability patterns, but they fundamentally **cannot reason about intent**.
 
-**GitHub Action via Marketplace:**
-```yaml
-# Using Claude Code (FREE for subscribers - no API costs!)
-- uses: momenbasel/vulnhawk@v0.1.0
-  with:
-    target: '.'
-    backend: 'claude-code'
-    claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+If your API has 20 endpoints and 19 of them verify authorization before acting on a resource, Semgrep has no way to flag the one that doesn't - because there is no pattern to match against. The vulnerability is the *absence* of a pattern.
 
-# Or using Anthropic API
-- uses: momenbasel/vulnhawk@v0.1.0
-  with:
-    target: '.'
-    api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-```
+## The Solution
 
----
+VulnHawk analyzes code with AI, and for every piece of code it examines, it includes **related code from elsewhere in your codebase** as context. This enrichment step lets the AI compare how similar components handle security - and spot the one that doesn't.
 
 <p align="center">
   <img src="docs/demo.svg" alt="VulnHawk Demo" width="800">
@@ -54,292 +39,146 @@ pip install vulnhawk
 
 ---
 
-## Why VulnHawk?
-
-Traditional SAST tools (Semgrep, CodeQL, Bandit, SonarQube) use pattern matching and AST rules. They find known patterns but **cannot understand intent**.
-
-VulnHawk analyzes your code with AI and cross-references how different parts of your codebase handle security. If 12 endpoints check authorization but one doesn't, VulnHawk catches it.
-
-## VulnHawk vs Other SAST Tools
-
-| Capability | VulnHawk | Semgrep | CodeQL | Snyk Code | Checkmarx | SonarQube |
-|---|---|---|---|---|---|---|
-| **Detection approach** | AI code understanding | Pattern matching (AST) | Data flow analysis (QL) | ML + rules | Pattern + data flow | Pattern matching |
-| **Business logic bugs** | Yes - detects missing auth, IDOR, logic flaws | No | Limited | Limited | Limited | No |
-| **Cross-file context** | Automatic - compares similar code patterns | Requires custom rules | Requires QL queries | Partial | Yes (paid) | Limited |
-| **Setup complexity** | Zero config | Rules config | Database build + queries | Config file | Complex setup + licensing | Server + config |
-| **Fix suggestions** | Context-specific code fixes with attack scenarios | Generic rule descriptions | Query-based descriptions | Generic patches | Generic recommendations | Rule-based tips |
-| **Custom rules needed** | No - AI understands intent | Yes - must write YAML rules | Yes - must write QL queries | Partial | Yes | Yes |
-| **PHP / Laravel support** | Yes | Yes | Yes | Yes | Yes | Yes |
-| **Ruby / Rails support** | Yes | Yes | Yes | Yes | Yes | Yes |
-| **False positive rate** | Low - validates with attack scenarios | Medium - pattern matches can be noisy | Low - but misses logic bugs | Medium | Medium-High | High |
-| **Pricing** | Free (Claude Code/Codex) / $0.50-$2 per scan (API) / Free (Ollama) | Free (OSS) / Paid (Team) | Free (OSS) / Paid (Advanced) | Free (limited) / $$$ | $$$$$ (enterprise only) | Free (Community) / $$$ |
-| **CI/CD integration** | GitHub Action (1 line) | GitHub Action | GitHub Action | GitHub Action | Plugins | Plugins |
-| **Local/private scanning** | Yes (Ollama backend) | Yes | Yes | No (cloud) | No (cloud) | Self-hosted |
-| **Finds what others miss** | Missing auth on 1-of-N endpoints, IDOR chains, stored input misuse, logic bypasses | Known code patterns only | Data flow sinks only | Known patterns + some ML | Known patterns + data flow | Known code smells |
-
-### What VulnHawk catches that others don't
-
-- **Missing authorization**: 12 endpoints check `user.is_admin` but one doesn't - VulnHawk cross-references and flags it
-- **IDOR / BOLA**: User ID from JWT vs user ID in URL parameter - VulnHawk understands the mismatch
-- **Logic flaws**: Payment amount set client-side, order state machine bypass, race conditions in balance updates
-- **Inconsistent validation**: Input sanitized in 5 handlers but raw in the 6th
-- **Stored input misuse**: User input saved safely but later used in `eval()`, `exec()`, or raw SQL 3 files away
-
-### When to use VulnHawk alongside traditional tools
-
-VulnHawk is **not a replacement** for Semgrep/CodeQL - it's the layer on top. Use the combination:
-
-| Tool | Best for |
-|---|---|
-| **Semgrep** | Known vulnerability patterns at scale, CI gatekeeping on known-bad patterns |
-| **CodeQL** | Deep data flow analysis, taint tracking across complex call chains |
-| **VulnHawk** | Business logic bugs, missing auth, IDOR, inconsistencies that rules can't express |
-
 ## Quick Start
 
 ```bash
 pip install vulnhawk
 ```
 
-### Option 1: Claude Code CLI (FREE for subscribers - RECOMMENDED)
-
-If you have a Claude Code subscription (Max or Team), you already have everything you need:
+Choose a backend:
 
 ```bash
-# Make sure claude CLI is installed and authenticated
-npm install -g @anthropic-ai/claude-code
-claude login
-
-# Scan with zero API costs
-vulnhawk scan ./src -b claude-code
-```
-
-This uses your existing Claude Code subscription. No API key. No per-token billing. Completely free.
-
-### Option 2: Codex CLI (FREE for ChatGPT Pro/Plus subscribers)
-
-If you have a ChatGPT Pro or Plus subscription:
-
-```bash
-# Make sure codex CLI is installed and authenticated
-npm install -g @openai/codex
-codex login
-
-# Scan with zero API costs
-vulnhawk scan ./src -b codex
-```
-
-> **Note**: Claude Code backend is recommended over Codex for security analysis quality. Use Codex if you only have an OpenAI subscription.
-
-### Option 3: API Key
-
-```bash
-export ANTHROPIC_API_KEY=sk-ant-...    # Claude (default, best results)
-# or
-export OPENAI_API_KEY=sk-...           # OpenAI
-```
-
-```bash
-vulnhawk scan ./src
-```
-
-### Option 4: Ollama (free, local, private)
-
-```bash
-ollama serve
-vulnhawk scan ./src -b ollama -m llama3.1
-```
-
-## Usage
-
-### Basic scan
-```bash
-vulnhawk scan ./src
-```
-
-### Focused scanning
-```bash
-# Only check authentication and authorization
-vulnhawk scan ./src --mode auth
-
-# Only check for injection vulnerabilities
-vulnhawk scan ./api --mode injection
-
-# Only look for hardcoded secrets
-vulnhawk scan . --mode secrets
-```
-
-### Output formats
-```bash
-# JSON output
-vulnhawk scan ./src -o json -f results.json
-
-# SARIF for GitHub Code Scanning
-vulnhawk scan ./src -o sarif -f results.sarif
-
-# Markdown report
-vulnhawk scan ./src -o markdown -f report.md
-```
-
-### Different LLM backends
-```bash
-# Claude Code CLI (FREE for subscribers - recommended)
+# Claude Code CLI - FREE for subscribers (recommended)
 vulnhawk scan ./src -b claude-code
 
-# Codex CLI (FREE for ChatGPT Pro/Plus - good alternative)
+# Codex CLI - FREE for ChatGPT Pro/Plus subscribers
 vulnhawk scan ./src -b codex
 
-# Claude API (default, best results)
-vulnhawk scan ./src -b claude
+# Claude API
+export ANTHROPIC_API_KEY=sk-ant-...
+vulnhawk scan ./src
 
 # OpenAI API
 vulnhawk scan ./src -b openai -m gpt-4o
 
-# Ollama (free, local, private)
+# Ollama - free, local, fully private
 vulnhawk scan ./src -b ollama -m llama3.1
 ```
 
-### Filter by severity
-```bash
-# Only critical and high
-vulnhawk scan ./src --severity high
+No config files. No rules to write. No database to build.
 
-# Everything including info
-vulnhawk scan ./src --severity info
+> **Claude Code and Codex backends are free** for users with existing subscriptions. VulnHawk pipes prompts through your local CLI, so there are no additional API costs.
+
+---
+
+## VulnHawk vs Other SAST Tools
+
+| Capability | VulnHawk | Semgrep | CodeQL | Snyk Code | Checkmarx | SonarQube |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| Detection method | AI reasoning | AST patterns | QL data flow | ML + rules | Patterns + flow | Patterns |
+| Business logic flaws | **Yes** | No | Limited | Limited | Limited | No |
+| Cross-file context | Automatic | Custom rules | Custom queries | Partial | Paid tier | Limited |
+| Setup complexity | Zero config | Rule config | DB build + QL | Config file | Complex | Server setup |
+| Custom rules required | No | Yes (YAML) | Yes (QL) | Partial | Yes | Yes |
+| Context-aware fixes | **Yes** | Generic | Generic | Generic | Generic | Generic |
+| Local / private mode | Ollama | Yes | Yes | No | No | Self-hosted |
+| CI/CD integration | 1-line Action | Action | Action | Action | Plugin | Plugin |
+| SARIF input (chain tools) | **Yes** | No | No | No | No | No |
+| Pricing | Free\* | Free / Paid | Free / Paid | Free / $$$ | $$$$$ | Free / $$$ |
+
+<sub>\*Free with Claude Code, Codex CLI, or Ollama. API backends cost ~$0.50-$2.00 per scan.</sub>
+
+### What VulnHawk finds that others cannot
+
+| Vulnerability class | Why rule-based tools miss it |
+|:---|:---|
+| Missing authorization on 1-of-N endpoints | No pattern to match - the bug is the *absence* of a check |
+| IDOR / BOLA | Requires understanding that the user ID in the JWT should match the ID in the URL |
+| Payment amount manipulation | Business logic - the amount field shouldn't be trusted from the client |
+| Inconsistent input validation | 5 handlers sanitize, the 6th doesn't - needs cross-file comparison |
+| Stored input misuse | Input saved safely, but `eval()`'d or raw-SQL'd 3 files away |
+| Race conditions in state updates | Concurrent balance modifications without locking |
+
+### Recommended tool combination
+
+VulnHawk is designed as a **complementary layer**, not a replacement:
+
+| Layer | Tool | Purpose |
+|:---|:---|:---|
+| 1 | **Semgrep** | Fast, deterministic gatekeeping on known-bad patterns |
+| 2 | **CodeQL** | Deep taint tracking across complex call chains |
+| 3 | **VulnHawk** | Business logic, auth gaps, IDOR, and inconsistencies rules can't express |
+
+---
+
+## Usage
+
+### Scan modes
+
+```bash
+vulnhawk scan ./src                      # Full scan (default)
+vulnhawk scan ./src --mode auth          # Auth bypass, missing checks, session flaws
+vulnhawk scan ./src --mode injection     # SQLi, command injection, SSTI, XSS
+vulnhawk scan ./src --mode secrets       # Hardcoded keys, tokens, passwords
+vulnhawk scan ./src --mode config        # Debug mode, permissive CORS, insecure cookies
+vulnhawk scan ./src --mode crypto        # Weak hashing, hardcoded keys, bad RNG
 ```
 
-### Enrich with other SAST results (SARIF input)
-
-Feed results from Semgrep, CodeQL, or any SARIF-producing tool into VulnHawk. It uses those findings as additional context to find **deeper vulnerabilities** - validating, expanding, and chaining findings that rule-based tools flagged.
+### Output formats
 
 ```bash
-# Run Semgrep first, then feed results to VulnHawk
+vulnhawk scan ./src -o json -f results.json        # JSON
+vulnhawk scan ./src -o sarif -f results.sarif       # SARIF (GitHub Code Scanning)
+vulnhawk scan ./src -o markdown -f report.md        # Markdown report
+```
+
+### Severity filter
+
+```bash
+vulnhawk scan ./src --severity high      # Critical + High only
+vulnhawk scan ./src --severity info      # Everything
+```
+
+### SARIF input - chain with other tools
+
+Feed Semgrep, CodeQL, or any SARIF-producing tool's output into VulnHawk. It uses those findings as additional context to **validate, expand, and chain** them into deeper vulnerabilities.
+
+```bash
+# Run Semgrep first, then enrich with VulnHawk
 semgrep --config auto ./src -o semgrep.sarif --sarif
 vulnhawk scan ./src --sarif-input semgrep.sarif
-
-# Or chain CodeQL results
-vulnhawk scan ./src --sarif-input codeql-results.sarif
-
-# Combine with any scan mode
-vulnhawk scan ./src --mode injection --sarif-input semgrep.sarif
 ```
 
-**What this does:**
-- VulnHawk reads the SARIF findings and injects them as context into every analysis prompt
-- The AI validates whether the other tool's findings are real or false positives
-- It looks for **related vulnerabilities** near flagged locations
-- It builds **multi-step attack chains** connecting findings from different tools
-- It checks whether suggested fixes actually address the root cause
+What this enables:
+- Validates whether other tools' findings are real or false positives
+- Discovers related vulnerabilities near flagged locations
+- Builds multi-step attack chains connecting findings across tools
+- Checks whether suggested fixes address the actual root cause
 
-**In CI/CD** - run Semgrep first (fast, free), then feed its output to VulnHawk for deep analysis:
+### Dry run
 
-```yaml
-steps:
-  - uses: actions/checkout@v4
-
-  # Step 1: Fast Semgrep scan
-  - name: Semgrep
-    uses: returntocorp/semgrep-action@v1
-    with:
-      config: auto
-      generateSarif: true
-
-  # Step 2: Feed Semgrep results to VulnHawk for deep AI analysis
-  - name: VulnHawk (enriched)
-    uses: momenbasel/vulnhawk@main
-    with:
-      target: '.'
-      backend: 'claude-code'
-      claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-      sarif-input: 'semgrep.sarif'
-```
-
-### Preview what will be scanned
 ```bash
-vulnhawk info ./src
+vulnhawk info ./src    # Preview files, chunks, and language breakdown
 ```
+
+---
 
 ## GitHub Action
 
-VulnHawk is designed to run as a **full initial baseline scan** on your default branch, then **incrementally on every PR** to catch new vulnerabilities before they merge.
+VulnHawk runs as a **baseline scan on your default branch** and **incrementally on every pull request**.
 
-### Recommended Setup: Initial Scan + PR Scans
+### Recommended setup
 
 ```yaml
 name: VulnHawk Security Scan
 on:
   push:
-    branches: [main, master]   # Full baseline scan on default branch
-  pull_request:                 # Incremental scan on every PR
+    branches: [main, master]
+  pull_request:
 
 permissions:
   security-events: write
   contents: read
-
-jobs:
-  vulnhawk:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run VulnHawk
-        uses: momenbasel/vulnhawk@main
-        with:
-          target: '.'
-          backend: 'claude-code'
-          claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          severity: 'medium'
-          fail-on-findings: 'true'
-```
-
-This gives you:
-- **Push to main/master**: Full codebase scan - establishes your security baseline and populates the Security tab
-- **Every PR**: Scans the full repo with PR changes included - catches new vulnerabilities before merge
-- **SARIF upload**: All findings appear in GitHub's **Security** > **Code Scanning** tab automatically
-
-### Using Claude Code (FREE - no API costs)
-
-```yaml
-- uses: momenbasel/vulnhawk@main
-  with:
-    target: '.'
-    backend: 'claude-code'
-    claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-```
-
-**Setup**: Run `claude config get oauth_token` locally, then add the value as a GitHub Actions secret named `CLAUDE_CODE_OAUTH_TOKEN`.
-
-### Using Codex (FREE for ChatGPT subscribers)
-
-```yaml
-- uses: momenbasel/vulnhawk@main
-  with:
-    target: '.'
-    backend: 'codex'
-```
-
-**Setup**: Codex uses OAuth from `codex login`. For CI, ensure the runner has Codex authenticated.
-
-### Using Anthropic API
-
-```yaml
-- uses: momenbasel/vulnhawk@main
-  with:
-    target: '.'
-    api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-```
-
-### PR-Only Scan (Lightweight)
-
-If you only want to scan on pull requests:
-
-```yaml
-name: Security Scan
-on: [pull_request]
-
-permissions:
-  security-events: write
 
 jobs:
   vulnhawk:
@@ -351,110 +190,200 @@ jobs:
           target: '.'
           backend: 'claude-code'
           claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          severity: 'high'
+          severity: 'medium'
           fail-on-findings: 'true'
 ```
 
-## Scan Modes
+Findings are automatically uploaded to GitHub's **Security > Code Scanning** tab via SARIF.
 
-| Mode | What it checks |
-|------|---------------|
-| `full` | Everything (default) |
-| `auth` | Authentication bypass, missing auth checks, session flaws, JWT issues |
-| `injection` | SQLi, command injection, SSTI, NoSQL injection, XSS |
-| `secrets` | Hardcoded API keys, passwords, tokens, connection strings |
-| `config` | Debug mode, verbose errors, permissive CORS, insecure cookies |
-| `crypto` | Weak hashing, hardcoded keys, insecure random, deprecated algorithms |
+### Backend options
+
+<table>
+<tr><th>Backend</th><th>Configuration</th></tr>
+<tr>
+<td><strong>Claude Code</strong> (free)</td>
+<td>
+
+```yaml
+backend: 'claude-code'
+claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+```
+Get your token: `claude config get oauth_token`
+</td>
+</tr>
+<tr>
+<td><strong>Codex</strong> (free)</td>
+<td>
+
+```yaml
+backend: 'codex'
+```
+Requires `codex login` on the runner.
+</td>
+</tr>
+<tr>
+<td><strong>Claude API</strong></td>
+<td>
+
+```yaml
+api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+</td>
+</tr>
+<tr>
+<td><strong>OpenAI API</strong></td>
+<td>
+
+```yaml
+backend: 'openai'
+api-key: ${{ secrets.OPENAI_API_KEY }}
+```
+</td>
+</tr>
+</table>
+
+### Chaining with Semgrep in CI
+
+```yaml
+steps:
+  - uses: actions/checkout@v4
+
+  - name: Semgrep (fast pattern scan)
+    uses: returntocorp/semgrep-action@v1
+    with:
+      config: auto
+      generateSarif: true
+
+  - name: VulnHawk (deep AI analysis)
+    uses: momenbasel/vulnhawk@main
+    with:
+      target: '.'
+      backend: 'claude-code'
+      claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      sarif-input: 'semgrep.sarif'
+```
+
+---
 
 ## Supported Languages
 
-| Language | Extensions | Framework-aware chunking |
-|---|---|---|
-| Python | `.py` | Django, Flask, FastAPI route detection |
-| JavaScript | `.js`, `.jsx` | Express, Fastify, Next.js route detection |
-| TypeScript | `.ts`, `.tsx` | Express, Fastify, NestJS route detection |
-| Go | `.go` | `net/http` handler detection |
-| Java | `.java` | Class and method splitting |
-| PHP | `.php` | Laravel routes, class/trait/interface splitting |
-| Ruby | `.rb`, `.erb` | Rails routes, class/module splitting |
+| Language | Extensions | Framework detection |
+|:---|:---|:---|
+| Python | `.py` | Django, Flask, FastAPI |
+| JavaScript | `.js` `.jsx` | Express, Fastify, Next.js |
+| TypeScript | `.ts` `.tsx` | Express, NestJS, Fastify |
+| Go | `.go` | net/http handlers |
+| Java | `.java` | Class/method splitting |
+| PHP | `.php` | Laravel routes, classes, traits, interfaces |
+| Ruby | `.rb` `.erb` | Rails routes, classes, modules |
+
+---
 
 ## How It Works
 
-1. **Discover** - Walks your codebase, respects `.gitignore` and `.vulnhawkignore`
-2. **Chunk** - Splits code into logical pieces (functions, classes, routes) with surrounding context
-3. **Enrich** - For each chunk, includes import context and **related code** from elsewhere in the codebase (this is the key differentiator - it shows the AI how other parts handle auth, validation, etc.)
-4. **Analyze** - Sends enriched chunks to the LLM with security-focused analysis prompts
-5. **Validate** - Cross-references findings, removes duplicates, assigns confidence scores
-6. **Report** - Formats results with code snippets, attack scenarios, and fix suggestions
+```
+Codebase ──> Discover ──> Chunk ──> Enrich ──> Analyze ──> Validate ──> Report
+                │            │          │           │           │
+           Respects      Functions  Related     LLM with    Dedup +
+           .gitignore   Classes    code from   security    confidence
+           .vulnhawk-   Routes     same dir +  prompts     scoring
+           ignore       Modules    auth patterns
+```
 
-The **enrichment step** is what makes VulnHawk fundamentally different. By showing the AI how similar endpoints in your codebase handle security, it can spot the one that doesn't.
+The **enrichment** step is the core differentiator. For each code chunk, VulnHawk includes:
+- Other functions/routes from the same directory
+- Auth middleware and guard patterns from across the codebase
+
+This gives the AI the context it needs to identify inconsistencies.
+
+---
 
 ## Configuration
 
 ### .vulnhawkignore
 
-Create a `.vulnhawkignore` file to exclude paths (same syntax as `.gitignore`):
+Exclude paths from scanning (gitignore syntax):
 
 ```
-# Skip generated code
 generated/
-*.gen.go
-
-# Skip vendor dependencies
 vendor/
 third_party/
+*.gen.go
 ```
 
-### Environment Variables
+### Environment variables
 
 | Variable | Description |
-|----------|-------------|
-| `CLAUDE_CODE_OAUTH_TOKEN` | OAuth token for Claude Code CLI backend (free for subscribers) |
-| `ANTHROPIC_API_KEY` | API key for Claude API backend |
-| `OPENAI_API_KEY` | API key for OpenAI backend |
+|:---|:---|
+| `CLAUDE_CODE_OAUTH_TOKEN` | Claude Code CLI authentication (free for subscribers) |
+| `ANTHROPIC_API_KEY` | Claude API key |
+| `OPENAI_API_KEY` | OpenAI API key |
 
-## Cost Comparison
+---
 
-| Backend | Cost per scan (~100 files) | Requirements |
-|---|---|---|
-| **Claude Code CLI** | **$0 (free)** | Claude Code Max/Team subscription |
-| **Codex CLI** | **$0 (free)** | ChatGPT Pro/Plus subscription |
-| Claude API | ~$0.50-$2.00 | Anthropic API key + credits |
-| OpenAI API | ~$1.00-$4.00 | OpenAI API key + credits |
-| Ollama | $0 (free) | Local GPU (8GB+ VRAM recommended) |
+## Cost
+
+| Backend | Per scan (~100 files) | Requirement |
+|:---|:---|:---|
+| **Claude Code CLI** | **Free** | Claude Code Max or Team subscription |
+| **Codex CLI** | **Free** | ChatGPT Pro or Plus subscription |
+| Claude API | ~$0.50 - $2.00 | Anthropic API credits |
+| OpenAI API | ~$1.00 - $4.00 | OpenAI API credits |
+| **Ollama** | **Free** | Local machine with 8GB+ VRAM |
+
+---
 
 ## FAQ
 
-**How is Claude Code CLI free?**
-If you have a Claude Code subscription (Max at $100/mo or $200/mo, or Team plan), you get unlimited Claude usage through the CLI. VulnHawk pipes analysis prompts through your existing `claude` CLI, so there are no additional API costs.
+<details>
+<summary><strong>How does the Claude Code CLI backend work for free?</strong></summary>
 
-**How is Codex CLI free?**
-If you have a ChatGPT Pro ($200/mo) or Plus ($20/mo) subscription, Codex CLI usage is included. VulnHawk uses `codex exec` to run analysis non-interactively. Note: Claude Code backend produces better security analysis results and is recommended.
+Claude Code subscriptions (Max at $100-$200/mo, or Team plans) include unlimited CLI usage. VulnHawk invokes `claude --print` under the hood, piping analysis prompts through your existing subscription. No API key. No per-token billing.
+</details>
 
-**How do I get my Claude Code OAuth token for CI?**
-Run `claude config get oauth_token` on your local machine where you're logged into Claude Code. Add that token as a GitHub Actions secret named `CLAUDE_CODE_OAUTH_TOKEN`.
+<details>
+<summary><strong>How do I get my OAuth token for CI/CD?</strong></summary>
 
-**Should I run VulnHawk on every PR or just on main?**
-Both. Run on push to main/master for a full baseline that populates your Security tab, and on every PR to catch new issues before merge. The recommended workflow config above does both.
+Run `claude config get oauth_token` on your local machine. Add the output as a GitHub Actions secret named `CLAUDE_CODE_OAUTH_TOKEN`.
+</details>
 
-**Will it find everything?**
-No security tool catches everything. VulnHawk is best at finding business logic bugs, missing authorization, and context-dependent vulnerabilities that pattern-matching tools miss. Use it alongside (not instead of) Semgrep/CodeQL.
+<details>
+<summary><strong>Should I run it on every PR or only on main?</strong></summary>
 
-**Is my code sent to an external API?**
-Yes, code chunks are sent to the configured LLM provider (Anthropic, OpenAI). Use the Ollama backend for fully local, private scanning.
+Both. Push-to-main scans establish your security baseline and populate the Security tab. PR scans catch new vulnerabilities before merge. The recommended workflow config handles both triggers.
+</details>
 
-**Does it support monorepos?**
-Yes. Point it at any directory and it will scan all supported files recursively.
+<details>
+<summary><strong>Is my code sent to an external service?</strong></summary>
 
-**Does it support PHP and Ruby on Rails?**
-Yes. VulnHawk has first-class support for PHP (including Laravel route detection, class/trait/interface splitting) and Ruby (including Rails route detection, class/module splitting). It understands framework-specific patterns like `Route::get()`, `resources`, and `before_action`.
+Yes - code chunks are sent to the configured LLM provider (Anthropic or OpenAI). For fully private, air-gapped scanning, use the **Ollama** backend which runs entirely on your local machine.
+</details>
+
+<details>
+<summary><strong>Does it replace Semgrep or CodeQL?</strong></summary>
+
+No. VulnHawk is a complementary layer. Semgrep and CodeQL are excellent at what they do (pattern matching and taint tracking). VulnHawk catches the business logic bugs, auth gaps, and inconsistencies that rules cannot express. Use all three together for the strongest coverage.
+</details>
+
+<details>
+<summary><strong>Does it support PHP / Laravel and Ruby / Rails?</strong></summary>
+
+Yes. VulnHawk includes framework-aware chunking for both. It detects Laravel `Route::get()` definitions, PHP classes/traits/interfaces, Rails route declarations (`get`, `post`, `resources`), and Ruby classes/modules. It also extracts framework-specific imports (`use`, `require`, `include`).
+</details>
+
+<details>
+<summary><strong>What is SARIF input?</strong></summary>
+
+You can feed VulnHawk a SARIF file produced by any other scanner (Semgrep, CodeQL, Snyk, etc.). VulnHawk uses those findings as additional context during analysis - validating them, finding related issues nearby, and building multi-step attack chains that connect findings across tools.
+</details>
+
+---
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```bash
-# Development setup
 git clone https://github.com/momenbasel/vulnhawk.git
 cd vulnhawk
 uv venv .venv && source .venv/bin/activate
@@ -462,17 +391,22 @@ uv pip install -e ".[dev]"
 pytest
 ```
 
+---
+
+## Support the Project
+
+If VulnHawk is useful to you, consider [sponsoring the project](https://github.com/sponsors/momenbasel) to support continued development.
+
+---
+
 ## License
 
-VulnHawk is **source-available** under a custom license.
+VulnHawk is **source-available** under the [VulnHawk License](LICENSE).
 
-**Free for everyone** - individuals, teams, startups, and enterprises can use VulnHawk at no cost for internal security scanning, provided it is installed from an **official distribution channel**:
+**Free for everyone** - individuals, teams, startups, and enterprises may use VulnHawk at no cost for internal security scanning, provided it is installed from an official distribution channel:
+
 - [GitHub Marketplace](https://github.com/marketplace/actions/vulnhawk-security-scan)
 - [PyPI](https://pypi.org/project/vulnhawk/)
 - [This repository](https://github.com/momenbasel/vulnhawk)
 
-**You cannot**: sell it, offer it as a paid/competing service, redistribute forks as your own product, or publish derivatives to any marketplace or registry.
-
-GitHub forks are allowed **only** for submitting pull requests back to this repository.
-
-See [LICENSE](LICENSE) for full terms.
+You may not sell the Software, offer it as a competing service, or redistribute forks as a product. Forks are permitted solely for submitting pull requests back to this repository. See [LICENSE](LICENSE) for full terms.
