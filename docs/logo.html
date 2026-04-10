@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VulnHawk Logo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d1117;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Outfit', sans-serif;
+    gap: 80px;
+    padding: 80px 40px;
+  }
+
+  .label {
+    color: #484f58;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+
+  /* ── Icon (512x512) ── */
+  .icon-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .icon {
+    width: 512px;
+    height: 512px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── Banner (1280x640) ── */
+  .banner-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .banner {
+    width: 1280px;
+    height: 640px;
+    background: #0d1117;
+    display: flex;
+    align-items: center;
+    padding: 0 100px;
+    gap: 72px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle grid texture */
+  .banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(88,166,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(88,166,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Top accent line */
+  .banner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f85149 0%, #f85149 35%, #58a6ff 65%, #58a6ff 100%);
+  }
+
+  .banner-logo {
+    width: 260px;
+    height: 260px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .banner-logo svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .banner-text {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .banner-title {
+    font-size: 76px;
+    font-weight: 800;
+    color: #f0f6fc;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  .banner-tagline {
+    font-size: 24px;
+    color: #8b949e;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  .banner-tags {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .banner-tag {
+    background: rgba(88,166,255,0.08);
+    border: 1px solid rgba(88,166,255,0.15);
+    color: #58a6ff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  .banner-langs {
+    color: #484f58;
+    font-size: 15px;
+    letter-spacing: 1px;
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  /* ── Size variants ── */
+  .sizes {
+    display: flex;
+    gap: 48px;
+    align-items: flex-end;
+  }
+
+  .size-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .size-label {
+    color: #484f58;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .size-128 { width: 128px; height: 128px; }
+  .size-64 { width: 64px; height: 64px; }
+  .size-32 { width: 32px; height: 32px; }
+  .size-16 { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ====== ICON 512x512 ====== -->
+<div class="icon-wrap">
+  <div class="label">Icon &mdash; 512 &times; 512</div>
+  <div class="icon">
+    <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background rounded square -->
+      <rect width="512" height="512" rx="96" fill="#0d1117"/>
+
+      <!-- Outer shield shape — implied, not outlined -->
+      <path d="M256 56L420 128V296L256 456L92 296V128L256 56Z" fill="#161b22"/>
+
+      <!-- The Hawk Mark: abstract raptor silhouette formed by two swept-back wings
+           converging into a sharp downward point — doubles as a "V" for Vuln -->
+      <!-- Left wing -->
+      <path d="M108 188L244 304L256 360L148 252L108 188Z" fill="#f85149"/>
+      <!-- Right wing -->
+      <path d="M404 188L268 304L256 360L364 252L404 188Z" fill="#f85149"/>
+
+      <!-- Inner chevron / scanning beam — the AI "focus" -->
+      <path d="M168 228L256 324L344 228" stroke="#58a6ff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+      <!-- Target dot -->
+      <circle cx="256" cy="340" r="8" fill="#58a6ff"/>
+
+      <!-- Accent: top bar (subtle) -->
+      <rect x="216" y="124" width="80" height="4" rx="2" fill="#f85149" opacity="0.6"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ====== SIZE VARIANTS ====== -->
+<div class="icon-wrap">
+  <div class="label">Size variants</div>
+  <div class="sizes">
+    <div class="size-item">
+      <div class="size-128">
+        <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="512" height="512" rx="96" fill="#0d1117"/>
+          <path d="M256 56L420 128V296L256 456L92 296V128L256 56Z" fill="#161b22"/>
+          <path d="M108 188L244 304L256 360L148 252L108 188Z" fill="#f85149"/>
+          <path d="M404 188L268 304L256 360L364 252L404 188Z" fill="#f85149"/>
+          <path d="M168 228L256 324L344 228" stroke="#58a6ff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="256" cy="340" r="8" fill="#58a6ff"/>
+          <rect x="216" y="124" width="80" height="4" rx="2" fill="#f85149" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="size-label">128px</div>
+    </div>
+    <div class="size-item">
+      <div class="size-64">
+        <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="512" height="512" rx="96" fill="#0d1117"/>
+          <path d="M256 56L420 128V296L256 456L92 296V128L256 56Z" fill="#161b22"/>
+          <path d="M108 188L244 304L256 360L148 252L108 188Z" fill="#f85149"/>
+          <path d="M404 188L268 304L256 360L364 252L404 188Z" fill="#f85149"/>
+          <path d="M168 228L256 324L344 228" stroke="#58a6ff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="256" cy="340" r="8" fill="#58a6ff"/>
+        </svg>
+      </div>
+      <div class="size-label">64px</div>
+    </div>
+    <div class="size-item">
+      <div class="size-32">
+        <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="512" height="512" rx="96" fill="#0d1117"/>
+          <path d="M256 56L420 128V296L256 456L92 296V128L256 56Z" fill="#161b22"/>
+          <path d="M108 188L244 304L256 360L148 252L108 188Z" fill="#f85149"/>
+          <path d="M404 188L268 304L256 360L364 252L404 188Z" fill="#f85149"/>
+          <path d="M168 228L256 324L344 228" stroke="#58a6ff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="256" cy="340" r="12" fill="#58a6ff"/>
+        </svg>
+      </div>
+      <div class="size-label">32px</div>
+    </div>
+    <div class="size-item">
+      <div class="size-16">
+        <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="512" height="512" rx="96" fill="#0d1117"/>
+          <path d="M108 188L244 304L256 360L148 252L108 188Z" fill="#f85149"/>
+          <path d="M404 188L268 304L256 360L364 252L404 188Z" fill="#f85149"/>
+          <path d="M168 228L256 324L344 228" stroke="#58a6ff" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="size-label">16px</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== BANNER 1280x640 ====== -->
+<div class="banner-wrap">
+  <div class="label">Banner &mdash; 1280 &times; 640</div>
+  <div class="banner">
+    <div class="banner-logo">
+      <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="512" height="512" rx="96" fill="#0d1117"/>
+        <path d="M256 56L420 128V296L256 456L92 296V128L256 56Z" fill="#161b22"/>
+        <path d="M108 188L244 304L256 360L148 252L108 188Z" fill="#f85149"/>
+        <path d="M404 188L268 304L256 360L364 252L404 188Z" fill="#f85149"/>
+        <path d="M168 228L256 324L344 228" stroke="#58a6ff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="256" cy="340" r="8" fill="#58a6ff"/>
+        <rect x="216" y="124" width="80" height="4" rx="2" fill="#f85149" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="banner-text">
+      <div class="banner-title">VulnHawk</div>
+      <div class="banner-tagline">AI-powered SAST that finds what Semgrep and CodeQL miss.</div>
+      <div class="banner-tags">
+        <span class="banner-tag">Business Logic</span>
+        <span class="banner-tag">Auth Bypass</span>
+        <span class="banner-tag">IDOR</span>
+        <span class="banner-tag">Free GitHub Action</span>
+      </div>
+      <div class="banner-langs">Python &middot; JavaScript &middot; TypeScript &middot; Go &middot; Java &middot; PHP &middot; Ruby</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== BANNER on light (for contrast check) ====== -->
+<div class="banner-wrap">
+  <div class="label">Icon on transparent (for README)</div>
+  <div style="display:flex;gap:40px;align-items:center;">
+    <div style="width:200px;height:200px;">
+      <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="512" height="512" rx="96" fill="#0d1117"/>
+        <path d="M256 56L420 128V296L256 456L92 296V128L256 56Z" fill="#161b22"/>
+        <path d="M108 188L244 304L256 360L148 252L108 188Z" fill="#f85149"/>
+        <path d="M404 188L268 304L256 360L364 252L404 188Z" fill="#f85149"/>
+        <path d="M168 228L256 324L344 228" stroke="#58a6ff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="256" cy="340" r="8" fill="#58a6ff"/>
+        <rect x="216" y="124" width="80" height="4" rx="2" fill="#f85149" opacity="0.6"/>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <span style="font-size:42px;font-weight:800;color:#f0f6fc;letter-spacing:-1px;">VulnHawk</span>
+      <span style="font-size:16px;color:#8b949e;font-weight:400;">AI-powered SAST</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
